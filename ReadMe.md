@@ -1,4 +1,4 @@
-# MiniCoder
+# minicoder.
 
 Minimal local-first code editor and lesson viewer.
 
