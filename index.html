@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ᴍɪɴɪᴄᴏᴅᴇʀ</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/devicon.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.5/FileSaver.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-markup.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-css.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-javascript.min.js"></script>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body class="hide-curriculum">
+    <header>
+        <div style="display: flex; align-items: center; gap: 8px;">
+            <button id="toggle-sidebar" class="btn-icon" title="Toggle Sidebar">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><line x1="9" y1="3" x2="9" y2="21"></line></svg>
+            </button>
+            <div class="brand">MINICODER</div>
+        </div>
+        <div class="actions" style="display: flex; gap: 8px;">
+            <button id="toggle-preview" class="btn-icon" title="Toggle Preview">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z"></path><circle cx="12" cy="12" r="3"></circle></svg>
+                <span style="margin-left: 4px; font-size: 11px;">Preview</span>
+            </button>
+            <button id="toggle-console" class="btn-icon" title="Toggle Console">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m5 8 6 6-6 6"></path><path d="M12 18h8"></path></svg>
+                <span style="margin-left: 4px; font-size: 11px;">Console</span>
+            </button>
+            <button id="toggle-curriculum" class="btn-icon" title="Curriculum">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H20v15.5a2.5 2.5 0 0 1-2.5 2.5H6.5a2.5 2.5 0 0 1-2.5-2.5z"></path><path d="M8 7h8"></path><path d="M8 11h8"></path><path d="M8 15h5"></path></svg>
+                <span style="margin-left: 4px; font-size: 11px;">Curriculum</span>
+            </button>
+            <button id="btn-refresh" class="btn-icon" title="Save & Refresh (Ctrl+S)">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M23 4v6h-6"></path><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"></path></svg>
+                <span style="margin-left: 4px; font-size: 11px;">Refresh</span>
+            </button>
+            <button id="export-zip" class="btn-icon" title="Export as ZIP">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
+                <span style="margin-left: 4px; font-size: 11px;">Export ZIP</span>
+            </button>
+            <button id="import-zip" class="btn-icon" title="Import ZIP">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="17 8 12 3 7 8"></polyline><line x1="12" y1="3" x2="12" y2="15"></line></svg>
+                <span style="margin-left: 4px; font-size: 11px;">Import ZIP</span>
+            </button>
+            <input type="file" id="zip-file-input" accept=".zip" style="display: none;">
+        </div>
+    </header>
+
+    <div id="sidebar-overlay"></div>
+
+    <main>
+        <aside id="sidebar">
+            <div class="sidebar-header">
+                <span>Files</span>
+                <button id="btn-add-file" class="btn-icon" title="New File">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+                </button>
+            </div>
+            <div id="new-file-container" class="hidden">
+                <input type="text" id="new-file-input" placeholder="filename.ext">
+            </div>
+            <div id="file-list"></div>
+        </aside>
+
+        <section id="editor-container">
+            <div id="tabs"></div>
+            <div id="editor"></div>
+        </section>
+
+        <div id="resizer"></div>
+
+        <section id="right-pane">
+            <div id="preview-container">
+                <iframe id="preview" sandbox="allow-scripts allow-modals"></iframe>
+            </div>
+        </section>
+
+        <div id="resizer-curriculum"></div>
+
+        <section id="curriculum-panel" class="hidden">
+            <div class="curriculum-header">
+                <button id="btn-back-to-lessons" class="btn-icon hidden" title="Back to Lessons">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m15 18-6-6 6-6"></path></svg>
+                </button>
+                <span id="curriculum-title">Lessons</span>
+            </div>
+            <div id="curriculum-content">
+                <div id="lesson-list"></div>
+                <div id="lesson-viewer" class="hidden"></div>
+                <div class="lesson-navigation hidden">
+                    <button id="btn-prev-lesson" class="btn-icon" title="Previous Lesson">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m15 18-6-6 6-6"></path></svg>
+                        <span>Previous</span>
+                    </button>
+                    <button id="btn-next-lesson" class="btn-icon" title="Next Lesson">
+                        <span>Next</span>
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m9 18 6-6-6-6"></path></svg>
+                    </button>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <div id="console-panel">
+        <div class="console-header">
+            <span>Console</span>
+            <button id="btn-clear-console" class="btn-icon" title="Clear Console">
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 6h18"></path><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg>
+            </button>
+        </div>
+        <div id="console-output"></div>
+    </div>
+
+    <footer>
+        <div id="status-left">Ready</div>
+    </footer>
+
+    <!-- Custom Modal -->
+    <div id="custom-modal" class="modal-overlay hidden">
+        <div class="modal-content">
+            <h3 id="modal-title">Delete File</h3>
+            <p id="modal-message">Are you sure you want to delete this file?</p>
+            <div class="modal-actions">
+                <button id="modal-cancel" class="btn-secondary">Cancel</button>
+                <button id="modal-confirm" class="btn-danger">Delete</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Monaco Loader -->
+    <script src="https://cdn.jsdelivr.net/npm/monaco-editor@0.45.0/min/vs/loader.js"></script>
+    <script src="script.js"></script>
+</body>
+</html>

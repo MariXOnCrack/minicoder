@@ -1,0 +1,9 @@
+services:
+  minicoder:
+    build: .
+    container_name: minicoder-app
+    ports:
+      - "9000:9000"
+    environment:
+      - PYTHONUNBUFFERED=1
+    restart: unless-stopped

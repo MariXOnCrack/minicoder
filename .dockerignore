@@ -1,0 +1,7 @@
+.git
+.vscode
+.idea
+__pycache__
+*.zip
+Dockerfile
+docker-compose.yml
